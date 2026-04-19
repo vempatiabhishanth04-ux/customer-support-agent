@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Customer Support AI</h2>
+
+<input id="q" placeholder="Ask something...">
+<button onclick="send()">Send</button>
+
+<p id="res"></p>
+
+<button onclick="fb('good')">👍</button>
+<button onclick="fb('bad')">👎</button>
+
+<script>
+let lastQ = "";
+let lastR = "";
+
+function send(){
+    let q = document.getElementById("q").value;
+
+    fetch("/send", {
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:"query="+q
+    })
+    .then(r=>r.text())
+    .then(d=>{
+        document.getElementById("res").innerText = d;
+        lastQ = q;
+        lastR = d;
+    });
+}
+
+function fb(type){
+    fetch("/feedback", {
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:`query=${lastQ}&response=${lastR}&type=${type}`
+    });
+}
+</script>
+
+</body>
+</html>
